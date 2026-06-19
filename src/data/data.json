@@ -1,0 +1,219 @@
+[
+  {
+    "id": 1,
+    "name": "iWatch Series 8",
+    "price": 999,
+    "image": "/Image/p5.png",
+    "promo": "Best Seller",
+    "category": "watch"
+
+  },
+  {
+    "id": 2,
+    "name": "Asus ROG Strix",
+    "price": 899,
+    "image": "/Image/p6.png",
+    "promo": "Best Seller",
+    "category": "laptop"
+
+  },
+  {
+    "id": 3,
+    "name": "Controller",
+    "price": 899,
+    "image": "/Image/p3.png",
+    "promo": "Best Seller",
+    "category": "controller"
+  },
+  {
+    "id": 4,
+    "name": "Headphone",
+    "price": 899,
+    "image": "/Image/p4.png",
+    "promo": "Best Seller",
+    "category": "headphone"
+  },
+  {
+    "id": 5,
+    "name": "Asus ROG Strix",
+    "price": 899,
+    "image": "/Image/p7.png",
+    "promo": "Best Seller",
+    "category": "laptop"
+  },
+  {
+    "id": 6,
+    "name": "Asus ROG Strix",
+    "price": 899,
+    "image": "/Image/p8.png",
+    "promo": "Best Seller",
+    "category": "laptop"
+  },
+  {
+    "id": 7,
+    "name": "Asus ROG Strix",
+    "price": 899,
+    "image": "/Image/p9.png",
+    "promo": "Best Seller",
+    "category": "laptop"
+  },
+  {
+    "id": 8,
+    "name": "Asus ROG Strix",
+    "price": 899,
+    "image": "/Image/p10.png",
+    "promo": "Best Seller",
+    "category": "laptop"
+  },
+  {
+    "id": 9,
+    "name": "Asus ROG Strix",
+    "price": 899,
+    "image": "/Image/p11.png",
+    "promo": "Best Seller",
+    "category": "laptop"
+  },
+  {
+    "id": 10,
+    "name": "Asus ROG Strix",
+    "price": 899,
+    "image": "/Image/p12.png",
+    "promo": "Best Seller",
+    "category": "laptop"
+  },
+  {
+    "id": 11,
+    "name": "Asus ROG Strix",
+    "price": 899,
+    "image": "/Image/p13.png",
+    "promo": "Best Seller",
+    "category": "laptop"
+  },
+  
+
+  {
+    "id": 12,
+    "name": "Headphone",
+    "price": 899,
+    "image": "/Image/p14.png",
+    "promo": "Best Seller",
+    "category": "headphone"
+  },
+  {
+    "id": 13,
+    "name": "Headphone",
+    "price": 899,
+    "image": "/Image/p15.png",
+    "promo": "Best Seller",
+    "category": "headphone"
+  },
+  {
+    "id": 14,
+    "name": "Headphone",
+    "price": 899,
+    "image": "/Image/p16.png",
+    "promo": "Best Seller",
+    "category": "headphone"
+  },
+  {
+    "id": 15,
+    "name": "Headphone",
+    "price": 899,
+    "image": "/Image/p17.png",
+    "promo": "Best Seller",
+    "category": "headphone"
+  },
+  {
+    "id": 16,
+    "name": "Headphone",
+    "price": 899,
+    "image": "/Image/p18.png",
+    "promo": "Best Seller",
+    "category": "headphone"
+  },
+  {
+    "id": 17,
+    "name": "Controller",
+    "price": 899,
+    "image": "/Image/p19.png",
+    "promo": "Best Seller",
+    "category": "controller"
+  },
+  {
+    "id": 18,
+    "name": "Controller",
+    "price": 899,
+    "image": "/Image/p20.png",
+    "promo": "Best Seller",
+    "category": "controller"
+  },
+  {
+    "id": 19,
+    "name": "Controller",
+    "price": 899,
+    "image": "/Image/p21.png",
+    "promo": "Best Seller",
+    "category": "controller"
+  },
+  {
+    "id": 20,
+    "name": "Controller",
+    "price": 899,
+    "image": "/Image/p22.png",
+    "promo": "Best Seller",
+    "category": "controller"
+  },
+  {
+    "id": 21,
+    "name": "Controller",
+    "price": 899,
+    "image": "/Image/p23.png",
+    "promo": "Best Seller",
+    "category": "controller"
+  },
+
+  {
+    "id": 22,
+    "name": "iWatch Series 8",
+    "price": 999,
+    "image": "/Image/p24.png",
+    "promo": "Best Seller",
+    "category": "watch"
+  },
+  {
+    "id": 23,
+    "name": "iWatch Series 8",
+    "price": 999,
+    "image": "/Image/p25.png",
+    "promo": "Best Seller",
+    "category": "watch"
+  },
+  {
+    "id": 24,
+    "name": "iWatch Series 8",
+    "price": 999,
+    "image": "/Image/p26.png",
+    "promo": "Best Seller",
+    "category": "watch"
+  },
+  {
+    "id": 25,
+    "name": "iWatch Series 8",
+    "price": 999,
+    "image": "/Image/p27.png",
+    "promo": "Best Seller",
+    "category": "watch"
+  },
+  {
+    "id": 26,
+    "name": "iWatch Series 8",
+    "price": 999,
+    "image": "/Image/p28.png",
+    "promo": "Best Seller",
+    "category": "watch"
+  }
+
+
+
+
+]
