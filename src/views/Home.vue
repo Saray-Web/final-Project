@@ -59,12 +59,12 @@
         </div>
     </main>
 </template>
-
 <script setup>
 import { onMounted } from 'vue';
 import { useProductstore } from '../stores/ProductStore';
 import cartItem from '../stores/Cardstore';
 import { ref } from 'vue';
+import p1 from '../Images/p1.png'
 
 
 const store = useProductstore();
