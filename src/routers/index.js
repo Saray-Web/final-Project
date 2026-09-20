@@ -1,46 +1,62 @@
 import { createRouter, createWebHistory } from "vue-router";
-import CardItem from "../components/CardItem.vue";
-import Detail from "../components/Detail.vue";
-import About from "../views/About.vue";
-import Contact from "../views/Contact.vue";
-import Home from "../views/Home.vue";
-import ProductList from "../views/ProductList.vue";
 
 const routes = [
     {
-        path: '/',
-        component: Home
+        path: "/",
+        name: "home",
+        component: () => import("../views/Home.vue"),
+        meta: { title: "Home" },
     },
     {
-        path: '/contact',
-        // alias: '/Contact',
-        component: Contact
+        path: "/contact",
+        name: "contact",
+        component: () => import("../views/Contact.vue"),
+        meta: { title: "Contact" },
     },
     {
-        path: '/productList',
-        redirect: '/productList/all'
+        path: "/productList",
+        redirect: "/productList/all",
     },
     {
-        path: '/productList/:category',
-        alias: '/ProductList',
-        component: ProductList
+        path: "/productList/:category",
+        name: "products",
+        alias: "/ProductList",
+        component: () => import("../views/ProductList.vue"),
+        meta: { title: "Products" },
     },
     {
-        path: '/about',
-        component: About
+        path: "/about",
+        name: "about",
+        component: () => import("../views/About.vue"),
+        meta: { title: "About" },
     },
     {
-        path: '/detail/:id',
-        component: Detail
+        path: "/detail/:id",
+        name: "detail",
+        component: () => import("../components/Detail.vue"),
+        meta: { title: "Product Detail" },
     },
     {
-        path: '/cart',
-        alias: '/CardItem',
-        component: CardItem
-    }
-]
+        path: "/cart",
+        name: "cart",
+        alias: "/CardItem",
+        component: () => import("../components/CardItem.vue"),
+        meta: { title: "Cart" },
+    },
+    {
+        path: "/:pathMatch(.*)*",
+        name: "not-found",
+        component: () => import("../views/NotFound.vue"),
+        meta: { title: "Page Not Found" },
+    },
+];
+
 const router = createRouter({
     history: createWebHistory(),
-    routes
-})
+    routes,
+    scrollBehavior() {
+        return { top: 0 };
+    },
+});
+
 export default router;

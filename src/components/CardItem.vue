@@ -1,614 +1,597 @@
 <template>
-    <main class="container">
-        <div class="row  mt-5 " v-if="cartItem.cart.length === 0">
-            <div class="col-lg-12 col-md-12 col-12 mt-5 text-center ">
-                <div class="icons">
-                    <i class="bi bi-cart-x "></i>
-                </div>
-                <div class="title">
-                    <h1>Your cart is empty...!!</h1>
-                    <p>Looks like you haven't added anything to your cart yet.</p>
-                </div>
-                <div>
-                    <router-link to="/ProductList"
-                        class="btn btn-warning text-dark py-2 mt-5 px-4 rounded-5 fw-bold">Continue
-                        Shopping
-                    </router-link>
-                </div>
-                <div class="mt-3  d-flex justify-content-center align-item-center secur ">
-                    <div class="d-flex   p-3">
-                        <i class="bi bi-truck px-2"> </i>
-                        <p> Free shipping over $50</p>
-                    </div>
-                    <div class="d-flex p-3">
-                        <i class="bi bi-shield px-2"> </i>
-                        <p> Secure checkout</p>
-                    </div>
-                </div>
+    <main class="container cart-page">
+        <div v-if="cartItem.cart.length === 0" class="empty-state">
+            <div class="empty-icon">
+                <i class="bi bi-cart-x"></i>
+            </div>
+            <h1>Your cart is empty</h1>
+            <p>Looks like you haven't added anything to your cart yet.</p>
+            <router-link to="/productList" class="btn home-btn">
+                <i class="bi bi-bag-check"></i> Continue Shopping
+            </router-link>
+            <div class="empty-perks">
+                <span><i class="bi bi-truck"></i> Free shipping over $50</span>
+                <span><i class="bi bi-shield-check"></i> Secure checkout</span>
             </div>
         </div>
-        <div class="row navs" v-else>
-            <div class="col-lg-12 col-md-12 col-12 d-flex justify-content-between adv">
-                <div class="left">
+
+        <div v-else class="cart-content">
+            <div class="cart-head">
+                <div>
                     <h1>Shopping Cart</h1>
-                    <p>( {{ cartItem.countQty }} ) items in your cart</p>
+                    <p>{{ cartItem.countQty }} item{{ cartItem.countQty === 1 ? '' : 's' }} in your cart</p>
                 </div>
-                <div class="right">
-                    <router-link class="text-decoration-none links" to="/productList">🔙 Continue Shopping</router-link>
-                </div>
+                <router-link to="/productList" class="back-link">
+                    <i class="bi bi-arrow-left"></i> Continue Shopping
+                </router-link>
             </div>
-            <div class="col-lg-12 col-md-12 col-12 cart-all">
-                <div class="product-summary col-lg-7 col-md-8 col-12  cart-left">
-                    <div class="cart-header">
-                        <div>
-                            <h3>Cart Items</h3>
-                        </div>
-                        <div>
-                            <button class="clear-cart btn"><i class="bi bi-trash3" @click="cartItem.clearCart()"></i> 
-                                Clear All
+
+            <div class="row g-4">
+                <div class="col-lg-7">
+                    <div class="panel cart-panel">
+                        <div class="panel-head">
+                            <h3><i class="bi bi-basket"></i> Cart Items</h3>
+                            <button class="clear-btn" @click="cartItem.clearCart()">
+                                <i class="bi bi-trash3"></i> Clear All
                             </button>
                         </div>
-                    </div>
-                    <div class="block-left ">
-                        <div class="cart-row " v-for="item in cartItem.cart" :key="item.id">
-                            <div class="cart-item-info">
-                                <div class="s-img">
-                                    <img :src="`${item.image}`" :alt="item.name">
-                                </div>
-                                <div class="d-img">
-                                    <h3>{{ item.name }}</h3>
-                                    <p>${{ item.price }} each</p>
-                                    <div class="qty-box">
-                                        <button @click="cartItem.decreaseQty(item.id)" class="qty-btn">-</button>
-                                        <span class="qty-number">{{ item.qty }}</span>
-                                        <button @click="cartItem.increaseQty(item.id)" class="qty-btn">+</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="cart-item-total">
-                                <button class="remove-btn" aria-label="Remove item" @click="cartItem.removeItem(item.id)">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
-                                <strong>${{ (item.price * item.qty).toFixed(2) }}</strong>
-                            </div>
-                        </div>
-                    </div>
 
-                </div>
-                <div class="cart-right product-summary1 col-lg-4 col-md-4 col-12">
-                    <div>
-                        <div>
-                            <h3>Order Summary</h3>
-                        </div>
-                        <div class="order">
-                            <div class="order-left">
-                                <p class="text-dark">Subtotal ( {{ cartItem.countQty }} itmes )</p>
-                                <p class="text-dark">Shipping</p>
-                                <p class="text-dark">Tax</p>
-                            </div>
-                            <div class="order-right">
-                                <h4>$ {{ cartItem.countTotal }}</h4>
-                                <p class="text-dark">Free</p>
-                                <h4 class="text-danger">$ {{ cartItem.tax }}</h4>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="order">
-                            <div class="order-left">
-                                <p class="text-dark">Total</p>
-
-                            </div>
-                            <div class="order-right">
-                                <h4>$ {{ cartItem.grandTotal }}</h4>
-
-                            </div>
-                        </div>
-                        <!-- Checkout Button -->
-                        <button class="btn btn-warning w-100 rounded-5" data-bs-toggle="modal"
-                            data-bs-target="#paymentModal">
-                            <i class="bi bi-credit-card text-dark me-2"></i>
-                            Proceed to Checkout
-                        </button>
-                    </div>
-                    <hr>
-
-                    <p class="text-dark">
-                        <i class="text-success px-2 bi bi-shield"></i>
-                        Secure SSL checkout
-                    </p>
-                    <p class="text-dark">
-                        <i class="text-primary px-2 bi bi-car-front"></i>
-                        Free returns within 30 days
-                    </p>
-                    <p class="text-dark">
-                                <i class="text-danger px-2 bi bi-heart"></i>
-                                24/7 customer support
-                            </p>
-                    <!-- Info Section -->
-                    <div class="text-center mt-3">
-                        <!-- Modal -->
-                        <Teleport to="body">
-                            <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel"
-                                aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                    <div class="modal-content rounded-4 shadow">
-                                        <!-- Header -->
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="paymentModalLabel">
-                                                Payment
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <!-- Body -->
-                                        <div class="modal-body text-center p-4">
-                                            <img src="/Image/qr.jpg" alt="QR Code" class="img-fluid mb-3 rounded-3"
-                                                style="max-width: 220px">
-
-                                            <h4 class="mt-3">
-
-                                                Total: ${{ cartItem.grandTotal }}
-                                            </h4>
-
-
-                                            <p class="text-muted">
-                                                Scan this QR Code to complete your payment.
-                                            </p>
-
-                                        </div>
-
-                                        <!-- Footer -->
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" data-bs-dismiss="modal">
-                                                Close
+                        <div class="cart-list">
+                            <div v-for="item in cartItem.cart" :key="item.id" class="cart-row">
+                                <div class="cart-item-info">
+                                    <router-link :to="`/detail/${item.id}`" class="s-img" :aria-label="`View ${item.name}`">
+                                        <img :src="item.image" :alt="item.name">
+                                    </router-link>
+                                    <div class="d-img">
+                                        <router-link :to="`/detail/${item.id}`" class="d-name-link">
+                                            <h3>{{ item.name }}</h3>
+                                        </router-link>
+                                        <p>${{ item.price }} each</p>
+                                        <div class="qty-box">
+                                            <button @click="cartItem.decreaseQty(item.id)" class="qty-btn" aria-label="Decrease quantity">
+                                                <i class="bi bi-dash-lg"></i>
+                                            </button>
+                                            <span class="qty-number">{{ item.qty }}</span>
+                                            <button @click="cartItem.increaseQty(item.id)" class="qty-btn" aria-label="Increase quantity">
+                                                <i class="bi bi-plus-lg"></i>
                                             </button>
                                         </div>
-
                                     </div>
                                 </div>
+                                <div class="cart-item-total">
+                                    <button class="remove-btn" aria-label="Remove item" @click="cartItem.removeItem(item.id)">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                    <strong>${{ (item.price * item.qty).toFixed(2) }}</strong>
+                                </div>
                             </div>
-                        </Teleport>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="panel summary-panel">
+                        <h3 class="summary-title"><i class="bi bi-receipt"></i> Order Summary</h3>
+
+                        <div class="summary-row">
+                            <span>Subtotal ({{ cartItem.countQty }} items)</span>
+                            <strong>${{ cartItem.totalFormatted }}</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping</span>
+                            <strong class="free">Free</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax (10%)</span>
+                            <strong>${{ cartItem.taxFormatted }}</strong>
+                        </div>
+
+                        <hr class="summary-divider">
+
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <strong>${{ cartItem.grandTotalFormatted }}</strong>
+                        </div>
+
+                        <button class="btn checkout-btn w-100" data-bs-toggle="modal" data-bs-target="#paymentModal">
+                            <i class="bi bi-credit-card-2-front"></i> Proceed to Checkout
+                        </button>
+
+                        <div class="summary-perks">
+                            <p><i class="bi bi-shield-check text-success"></i> Secure SSL checkout</p>
+                            <p><i class="bi bi-arrow-counterclockwise text-primary"></i> Free returns within 30 days</p>
+                            <p><i class="bi bi-heart text-danger"></i> 24/7 customer support</p>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <Teleport to="body">
+                <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content rounded-4 shadow">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="paymentModalLabel">
+                                    <i class="bi bi-qr-code me-2"></i> Payment
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center p-4">
+                                <img src="/Image/qr.jpg" alt="Scan QR to pay" class="img-fluid mb-3 rounded-3 qr-img">
+                                <h4 class="mt-3">Total: ${{ cartItem.grandTotalFormatted }}</h4>
+                                <p class="text-muted mb-0">Scan this QR code to complete your payment securely.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary rounded-pill w-100" data-bs-dismiss="modal">
+                                    <i class="bi bi-check-lg me-1"></i> I've completed payment
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Teleport>
         </div>
     </main>
 </template>
 
 <script setup>
-
 import useCartItem from '../stores/Cardstore';
-const cartItem = useCartItem();
 
+const cartItem = useCartItem();
 </script>
 
 <style scoped>
-.line-h {
-    line-height: 5px;
-}
+    .cart-page {
+        padding-top: 130px;
+        min-height: 60vh;
+    }
 
-.order {
-    display: flex;
-    margin-top: 10px;
-}
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 60px 16px;
+        max-width: 520px;
+        margin: 0 auto;
+    }
 
-.order-left {
-    width: 50%;
-}
-
-.order-right {
-    width: 50%;
-
-    text-align: end;
-}
-
-.cart-header {
-    width: 100%;
-    height: 20px;
-    display: flex;
-    justify-content: space-between;
-
-}
-
-.qty-box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 116px;
-    height: 38px;
-    padding: 0 12px;
-    border: 1px solid #e5e7eb;
-    border-radius: 999px;
-    background: #fff;
-}
-
-.qty-btn {
-    border: none;
-    background: transparent;
-    color: #111827;
-    font-size: 0;
-    font-weight: 500;
-    line-height: 1;
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.qty-btn::before {
-    content: "+";
-    font-size: 20px;
-}
-
-.qty-btn:first-child::before {
-    content: "-";
-}
-
-.qty-btn:hover {
-    color: #0d6efd;
-}
-
-.qty-btn:active {
-    transform: scale(0.92);
-}
-
-.qty-number {
-    color: #063a8f;
-    font-weight: 500;
-    min-width: 24px;
-    text-align: center;
-    font-size: 14px;
-}
-
-.block-img {
-    display: flex;
-    justify-content: center;
-    column-gap: 50px;
-    align-items: center;
-}
-
-.block-img .d-img {
-    margin-top: 15px;
-}
-
-.cart-all {
-    display: flex;
-    justify-content: space-between;
-}
-
-/* .product-summary {
-    padding: clamp(10px, 4vw, 20px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 22px;
-    background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.258), rgba(255, 255, 255, 0.03)),
-        rgba(12, 14, 18, 0.187);
-    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(14px);
-    min-height: 100px;
-     */
-/* } */
-
-.product-summary1 {
-    padding: clamp(24px, 4vw, 48px);
-    /* border: 1px solid rgba(255, 255, 255, 0.12); */
-    border-radius: 22px;
-    height: 480px;
-    background:
-        linear-gradient(135deg, rgb(255, 255, 255), rgba(255, 255, 255, 0.03)),
-        rgba(12, 14, 18, 0.443);
-    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(14px);
-}
-
-.links {
-    color: rgb(13, 13, 13);
-    padding: 15px 15px;
-
-
-}
-
-.links:hover {
-
-    background: rgba(48, 46, 46, 0.1);
-    border-radius: 20px;
-}
-
-.navs {
-    padding-top: 150px;
-}
-
-@media (max-width: 576px) {
-    .block-img {
-        display: flex;
-        justify-content: center;
-        column-gap: 20px;
+    .empty-icon {
+        display: inline-flex;
         align-items: center;
+        justify-content: center;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: rgba(150, 224, 11, 0.1);
+        border: 1px solid rgba(150, 224, 11, 0.3);
+        margin-bottom: 22px;
     }
 
-    .cart-all {
+    .empty-icon i {
+        font-size: 3.2rem;
+        color: #bdf466;
+    }
+
+    .empty-state h1 {
+        color: #fff;
+        font-weight: 800;
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+    }
+
+    .empty-state p {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.05rem;
+        margin-top: 10px;
+    }
+
+    .home-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 48px;
+        border-radius: 999px;
+        padding: 10px 24px;
+        background: #96e00b;
+        color: #102129;
+        font-weight: 800;
+        border: 0;
+        margin-top: 26px;
+        box-shadow: 0 14px 30px rgba(150, 224, 11, 0.25);
+        transition: transform 0.2s ease;
+    }
+
+    .home-btn:hover {
+        color: #102129;
+        transform: translateY(-2px);
+    }
+
+    .empty-perks {
         display: flex;
-        flex-direction: column;
-        row-gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 34px;
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 0.95rem;
     }
 
-    .product-summary1 {
-        padding: clamp(24px, 4vw, 48px);
+    .empty-perks span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .empty-perks i {
+        color: #bdf466;
+    }
+
+    /* Filled cart */
+    .cart-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 26px;
+    }
+
+    .cart-head h1 {
+        color: #fff;
+        font-weight: 900;
+        font-size: clamp(1.7rem, 3vw, 2.3rem);
+        margin-bottom: 4px;
+    }
+
+    .cart-head p {
+        color: rgba(255, 255, 255, 0.6);
+        margin: 0;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #bdf466;
+        font-weight: 700;
+        text-decoration: none;
+        padding: 9px 16px;
+        border-radius: 999px;
+        background: rgba(150, 224, 11, 0.1);
+        border: 1px solid rgba(150, 224, 11, 0.3);
+        transition: background 0.2s ease;
+    }
+
+    .back-link:hover {
+        background: rgba(150, 224, 11, 0.2);
+    }
+
+    .panel {
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 22px;
-        background:
-            linear-gradient(135deg, rgba(255, 255, 255, 0.258), rgba(255, 255, 255, 0.03)),
-            rgba(12, 14, 18, 0.187);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)), rgba(12, 14, 18, 0.85);
         box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
         backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
     }
 
-
-
-    .left {
-        width: 40%;
+    .cart-panel {
+        padding: 26px 22px;
     }
 
-    .links {
-        color: rgb(239, 229, 229);
-        padding: 15px 15px;
+    .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
     }
 
-    .links:hover {
-
-        background: rgba(195, 148, 148, 0.1);
-        border-radius: 20px;
-    }
-}
-
-.left p {
-    color: rgba(247, 247, 247, 0.652);
-}
-
-.icons i {
-    font-size: 150px;
-    color: rgba(240, 248, 255, 0.556);
-}
-
-.title h1,
-p,
-i {
-    color: rgba(54, 109, 227, 0.423);
-}
-
-.title p {
-    font-size: 20px;
-}
-
-.secur {
-    font-size: 18px;
-}
-
-.navs {
-    padding-top: 100px;
-}
-
-.left h1 {
-    color: #e7eaf0;
-    font-size: 32px;
-    font-weight: 500;
-    letter-spacing: 0;
-    margin-bottom: 6px;
-}
-
-.left p {
-    color: #ffffff;
-
-    font-size: 18px;
-    /* margin: 10px; */
-}
-
-.product-summary.cart-left {
-    /* background: #ffffff;
-    border: 1px solid #e5e7eb; */
-    border-radius: 22px;
-    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.12);
-    padding: 28px 24px 24px;
-    background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.258), rgba(255, 255, 255, 0.03)),
-        rgba(12, 14, 18, 0.187);
-    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(14px);
-    min-height: 200px !important;
-}
-
-.cart-header {
-    align-items: center;
-    display: flex;
-    height: auto;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    width: 100%;
-}
-
-.cart-header h3 {
-    color: #f6f7f8;
-    font-size: 20px;
-    font-weight: 500;
-    margin: 0;
-}
-
-.clear-cart {
-    align-items: center;
-    color: #fefeff;
-    display: inline-flex;
-    gap: 12px;
-    font-size: 15px;
-    padding: 6px 8px;
-}
-
-.clear-cart i,
-.remove-btn i {
-    color: #f9f9fa;
-    font-size: 15px;
-}
-
-.block-left {
-    display: flex;
-    flex-direction: column;
-}
-
-.cart-row {
-    align-items: center;
-    border-bottom: 1px solid #e5e7eb;
-    display: flex;
-    justify-content: space-between;
-    min-height: 135px;
-    padding: 16px 0;
-}
-
-.cart-row:last-child {
-    border-bottom: 0;
-    padding-bottom: 0;
-}
-
-.cart-item-info {
-    align-items: center;
-    display: flex;
-    gap: 16px;
-    min-width: 0;
-}
-
-.cart-left .s-img {
-    border-radius: 18px;
-    flex: 0 0 100px;
-    height: 100px;
-    overflow: hidden;
-}
-
-.cart-left .s-img img {
-    display: block;
-    height: 100%;
-    object-fit: cover;
-    width: 100%;
-}
-
-.cart-left .d-img {
-    margin-top: 0;
-}
-
-.cart-left .d-img h3 {
-    color: #e3e5e9;
-    font-size: 20px;
-    font-weight: 500;
-    margin: 0 0 4px;
-}
-
-.cart-left .d-img p {
-    color: #f7f9fb;
-    font-size: 14px;
-    margin: 0 0 16px;
-}
-
-.cart-left .qty-box {
-    align-items: center;
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 999px;
-    display: flex;
-    height: 38px;
-    justify-content: space-between;
-    padding: 0 12px;
-    width: 116px;
-}
-
-.cart-left .qty-btn {
-    color: #4b5563;
-    font-size: 22px;
-    font-weight: 400;
-}
-
-.cart-left .qty-btn::before {
-    content: none;
-}
-
-.cart-left .qty-btn:hover {
-    color: #111827;
-}
-
-.cart-left .qty-number {
-    color: #111827;
-    font-weight: 700;
-}
-
-.cart-item-total {
-    align-self: stretch;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-width: 110px;
-    text-align: right;
-}
-
-.remove-btn {
-    align-self: flex-end;
-    background: transparent;
-    border: 0;
-    line-height: 1;
-    padding: 0;
-}
-
-.cart-item-total strong {
-    color: #111827;
-    font-size: 20px;
-    font-weight: 800;
-}
-
-@media (max-width: 576px) {
-    .left {
-
-        width: 50%;
+    .panel-head h3,
+    .summary-title {
+        color: #fff;
+        font-size: 1.15rem;
+        font-weight: 800;
+        margin: 0;
     }
 
-    .right {
-        margin-top: 20px;
-        width: 60%;
+    .panel-head h3 i,
+    .summary-title i {
+        color: #bdf466;
+        margin-right: 8px;
     }
 
-    .left h1 {
-        font-size: 28px;
+    .clear-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 0;
+        background: transparent;
+        color: #ff8a8a;
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 6px 10px;
+        border-radius: 999px;
+        transition: background 0.15s ease;
     }
 
-    .links {
-        text-align: end;
-        color: #dee1e8;
-
+    .clear-btn:hover {
+        background: rgba(255, 107, 107, 0.14);
     }
 
-    .product-summary.cart-left {
-        padding: 22px 18px;
+    .cart-list {
+        display: flex;
+        flex-direction: column;
     }
 
     .cart-row {
-        align-items: flex-start;
-        gap: 12px;
-        min-height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .cart-row:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
     }
 
     .cart-item-info {
-        align-items: flex-start;
-        gap: 12px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+        flex: 1;
     }
 
-    .cart-left .s-img {
-        flex-basis: 76px;
-        height: 76px;
+    .s-img {
+        flex: 0 0 92px;
+        width: 92px;
+        height: 92px;
+        border-radius: 16px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #1a3340, #0f2027);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .s-img:hover {
+        transform: scale(1.03);
+        border-color: rgba(150, 224, 11, 0.5);
+    }
+
+    .s-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 8px;
+    }
+
+    .d-img {
+        min-width: 0;
+    }
+
+    .d-name-link {
+        display: block;
+        text-decoration: none;
+    }
+
+    .d-name-link:hover h3 {
+        color: #bdf466;
+    }
+
+    .d-img h3 {
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0 0 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: color 0.15s ease;
+    }
+
+    .d-img p {
+        color: #bdf466;
+        font-size: 0.85rem;
+        margin: 0 0 10px;
+        font-weight: 600;
+    }
+
+    .qty-box {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 999px;
+        padding: 3px;
+    }
+
+    .qty-btn {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        font-size: 0.85rem;
+        transition: background 0.15s ease;
+    }
+
+    .qty-btn:hover {
+        background: #96e00b;
+        color: #102129;
+    }
+
+    .qty-number {
+        min-width: 30px;
+        text-align: center;
+        color: #fff;
+        font-weight: 800;
+        font-size: 0.95rem;
     }
 
     .cart-item-total {
-        min-width: 84px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: space-between;
+        align-self: stretch;
+        min-width: 96px;
+    }
+
+    .remove-btn {
+        border: 0;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 1rem;
+        line-height: 1;
+        padding: 4px;
+        transition: color 0.15s ease;
+    }
+
+    .remove-btn:hover {
+        color: #ff6b6b;
     }
 
     .cart-item-total strong {
-        font-size: 17px;
+        color: #fff;
+        font-size: 1.05rem;
+        font-weight: 800;
     }
-}
+
+    /* Summary */
+    .summary-panel {
+        padding: 26px 22px;
+        position: sticky;
+        top: 110px;
+    }
+
+    .summary-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 0.95rem;
+        padding: 9px 0;
+    }
+
+    .summary-row strong {
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .summary-row .free {
+        color: #bdf466;
+    }
+
+    .summary-row.total {
+        font-size: 1.2rem;
+        color: #fff;
+        font-weight: 800;
+        padding: 12px 0;
+    }
+
+    .summary-row.total strong {
+        color: #bdf466;
+        font-size: 1.35rem;
+        font-weight: 900;
+    }
+
+    .summary-divider {
+        border-color: rgba(255, 255, 255, 0.12);
+        opacity: 1;
+        margin: 8px 0;
+    }
+
+    .checkout-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 50px;
+        border-radius: 999px;
+        background: #96e00b;
+        color: #102129;
+        font-weight: 800;
+        border: 0;
+        margin-top: 8px;
+        box-shadow: 0 14px 28px rgba(150, 224, 11, 0.24);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .checkout-btn:hover {
+        color: #102129;
+        transform: translateY(-2px);
+        box-shadow: 0 18px 34px rgba(150, 224, 11, 0.32);
+    }
+
+    .summary-perks {
+        margin-top: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .summary-perks p {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 0.88rem;
+        margin: 0;
+    }
+
+    .qr-img {
+        max-width: 210px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    @media (max-width: 991px) {
+        .summary-panel {
+            position: static;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .cart-page {
+            padding-top: 115px;
+        }
+
+        .cart-head {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cart-panel,
+        .summary-panel {
+            padding: 20px 16px;
+        }
+
+        .cart-row {
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .cart-item-total {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .s-img {
+            flex-basis: 72px;
+            width: 72px;
+            height: 72px;
+        }
+    }
 </style>
