@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar navbar-expand-lg glass-navbar fixed-top">
+    <nav class="navbar navbar-expand-lg glass-navbar sticky-top">
         <div class="container">
             <router-link class="navbar-brand shop" to="/" @click="closeMenu">
                 <span class="brand-mark"><i class="bi bi-shop"></i></span>
@@ -7,8 +7,11 @@
             </router-link>
 
             <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
-                data-bs-target="#glassNav" aria-controls="glassNav" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="bi bi-list nav-toggler-icon"></i>
+                data-bs-target="#glassNav" aria-controls="glassNav" aria-expanded="false" aria-label="Toggle navigation"
+                :aria-expanded="menuOpen ? 'true' : 'false'">
+                <span class="burger" :class="{ open: menuOpen }" aria-hidden="true">
+                    <span></span><span></span><span></span>
+                </span>
             </button>
 
             <div class="collapse navbar-collapse" id="glassNav">
@@ -42,10 +45,18 @@
                             <i class="bi bi-search search-icon"></i>
                             <input type="search" v-model="query" class="form-control glass-input"
                                 placeholder="Search products..." aria-label="Search products"
-                                @focus="showResults = true" @blur="hideResultsDelayed" @input="runSearch">
+                                @focus="showResults = true" @blur="hideResultsDelayed" @input="runSearch"
+                                @keydown.esc="hideResults">
                         </form>
 
-                        <div v-if="showResults" class="search-results">
+                        <div v-if="showResults && query" class="search-results">
+                            <div class="search-head">
+                                <span class="search-head-title">
+                                    <i class="bi bi-magic"></i> Results
+                                </span>
+                                <span v-if="suggestions.length" class="search-head-count">{{ suggestions.length }}</span>
+                            </div>
+
                             <p v-if="searching" class="search-status">
                                 <span class="spinner-border spinner-border-sm me-2"></span> Searching...
                             </p>
@@ -53,15 +64,16 @@
                                 <i class="bi bi-search me-2"></i> No products found
                             </p>
                             <router-link v-for="p in suggestions" :key="p.id" :to="`/detail/${p.id}`"
-                                class="search-result" @mousedown.prevent @click="goToDetail(p)">
+                                class="search-result" @mousedown.prevent @click.prevent="goToDetail(p)">
                                 <img :src="p.image" :alt="p.name">
                                 <span class="search-result-body">
                                     <strong>{{ p.name }}</strong>
                                     <small><i class="bi bi-currency-dollar"></i>{{ p.price }}</small>
                                 </span>
+                                <i class="bi bi-arrow-right-short search-result-go"></i>
                             </router-link>
                             <router-link v-if="suggestions.length" :to="{ path: '/productList/all', query: { q: query } }"
-                                class="search-view-all" @mousedown.prevent @click="submitSearch">
+                                class="search-view-all" @mousedown.prevent @click.prevent="submitSearch">
                                 View all results <i class="bi bi-arrow-right"></i>
                             </router-link>
                         </div>
@@ -96,10 +108,18 @@ const query = ref('');
 const showResults = ref(false);
 const searching = ref(false);
 const suggestions = ref([]);
+const menuOpen = ref(false);
 
 let hideTimer = null;
 
-onMounted(() => store.fetchProducts());
+onMounted(() => {
+    store.fetchProducts();
+    const collapseEl = document.getElementById('glassNav');
+    if (collapseEl) {
+        collapseEl.addEventListener('shown.bs.collapse', () => (menuOpen.value = true));
+        collapseEl.addEventListener('hidden.bs.collapse', () => (menuOpen.value = false));
+    }
+});
 
 function runSearch() {
     if (!query.value.trim()) {
@@ -126,9 +146,10 @@ function submitSearch() {
     }
 }
 
-function goToDetail() {
+function goToDetail(p) {
     hideResults();
     closeMenu();
+    router.push(`/detail/${p.id}`);
 }
 
 function hideResults() {
@@ -189,9 +210,44 @@ watch(() => route.fullPath, () => {
         box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
     }
 
-    .nav-toggler-icon {
-        font-size: 1.7rem;
-        color: #fff;
+    .navbar-toggler {
+        position: relative;
+        padding: 0.45rem 0.55rem;
+    }
+
+    .burger {
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 30px;
+        height: 30px;
+    }
+
+    .burger span {
+        display: block;
+        width: 100%;
+        height: 2px;
+        border-radius: 999px;
+        background: #fff;
+        transition: transform 0.28s ease, opacity 0.2s ease, width 0.28s ease;
+    }
+
+    .burger span:nth-child(2) {
+        width: 70%;
+    }
+
+    .burger.open span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+
+    .burger.open span:nth-child(2) {
+        opacity: 0;
+        width: 100%;
+    }
+
+    .burger.open span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
     }
 
     .nav-hover {
@@ -259,18 +315,88 @@ watch(() => route.fullPath, () => {
 
     .search-results {
         position: absolute;
-        top: calc(100% + 8px);
+        top: calc(100% + 10px);
         left: 0;
         right: 0;
-        z-index: 50;
-        max-height: 320px;
+        z-index: 60;
+        max-height: min(360px, 60svh);
         overflow-y: auto;
         padding: 8px;
-        border-radius: 18px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        background: rgba(11, 26, 33, 0.97);
-        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(16px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background:
+            linear-gradient(160deg, rgba(150, 224, 11, 0.08), transparent 40%),
+            rgba(7, 23, 29, 0.98);
+        box-shadow: 0 28px 70px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        animation: dropIn 0.22s ease;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(150, 224, 11, 0.5) transparent;
+    }
+
+    .search-results::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .search-results::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .search-results::-webkit-scrollbar-thumb {
+        background: rgba(150, 224, 11, 0.4);
+        border-radius: 999px;
+    }
+
+    @keyframes dropIn {
+        from {
+            opacity: 0;
+            transform: translateY(-8px) scale(0.98);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .search-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 4px 10px 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        margin-bottom: 4px;
+    }
+
+    .search-head-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+    }
+
+    .search-head-title i {
+        color: #b9f15a;
+        font-size: 0.9rem;
+    }
+
+    .search-head-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 22px;
+        height: 22px;
+        padding: 0 7px;
+        border-radius: 999px;
+        background: rgba(150, 224, 11, 0.16);
+        color: #bdf466;
+        font-size: 0.75rem;
+        font-weight: 800;
     }
 
     .search-status {
@@ -286,19 +412,22 @@ watch(() => route.fullPath, () => {
         display: flex;
         align-items: center;
         gap: 12px;
+        min-height: 56px;
         padding: 8px 10px;
-        border-radius: 12px;
+        border-radius: 14px;
         color: #fff;
         text-decoration: none;
-        transition: background-color 0.15s ease;
+        transition: background-color 0.15s ease, transform 0.15s ease;
     }
 
     .search-result:hover,
     .search-result:focus-visible {
         background: rgba(255, 255, 255, 0.1);
+        transform: translateX(3px);
     }
 
     .search-result img {
+        flex: 0 0 auto;
         width: 44px;
         height: 44px;
         object-fit: contain;
@@ -325,13 +454,25 @@ watch(() => route.fullPath, () => {
         font-weight: 700;
     }
 
+    .search-result-go {
+        margin-left: auto;
+        color: rgba(255, 255, 255, 0.35);
+        font-size: 1.3rem;
+        transition: color 0.15s ease, transform 0.15s ease;
+    }
+
+    .search-result:hover .search-result-go {
+        color: #b9f15a;
+        transform: translateX(2px);
+    }
+
     .search-view-all {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 6px;
         margin-top: 6px;
-        padding: 10px;
+        padding: 11px;
         border-radius: 12px;
         background: rgba(150, 224, 11, 0.14);
         color: #bdf466;
@@ -411,13 +552,17 @@ watch(() => route.fullPath, () => {
         }
 
         .navbar-collapse {
-            width: min(100%, 520px);
-            margin: 12px auto 0;
+            width: min(100%, 540px);
+            margin: 14px auto 0;
             padding: 14px;
-            border-radius: 22px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+            border-radius: 24px;
+            background:
+                linear-gradient(160deg, rgba(150, 224, 11, 0.07), transparent 42%),
+                rgba(9, 26, 33, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
         }
 
         .navbar-nav {
@@ -442,7 +587,7 @@ watch(() => route.fullPath, () => {
         }
 
         .search-results {
-            max-height: 260px;
+            max-height: min(300px, 55svh);
         }
 
         .glass-btn {
@@ -476,16 +621,31 @@ watch(() => route.fullPath, () => {
         .navbar-collapse {
             margin-top: 10px;
             padding: 10px;
-            border-radius: 18px;
+            border-radius: 20px;
         }
 
         .glass-input,
         .glass-btn {
-            min-height: 40px;
+            min-height: 42px;
         }
 
         .glass-btn {
             padding: 8px 14px;
+        }
+
+        .search-results {
+            border-radius: 18px;
+            padding: 6px;
+        }
+
+        .search-result {
+            min-height: 52px;
+            padding: 6px 8px;
+        }
+
+        .search-result img {
+            width: 40px;
+            height: 40px;
         }
     }
 </style>

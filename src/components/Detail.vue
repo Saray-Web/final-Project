@@ -120,7 +120,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useProductstore } from '../stores/ProductStore';
 import cartItem from '../stores/Cardstore';
@@ -162,6 +162,16 @@ onMounted(() => {
     store.fetchProducts();
     store.fetchProduct(route.params.id);
 });
+
+watch(
+    () => route.params.id,
+    (id) => {
+        if (id) {
+            quantity.value = 1;
+            store.fetchProduct(id);
+        }
+    }
+);
 </script>
 
 <style scoped>
